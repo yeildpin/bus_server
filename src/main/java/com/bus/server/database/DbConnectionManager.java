@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 
 import com.bus.server.Application;
 import com.bus.server.database.proxool.DefaultConnectionProvider;
-import com.bus.server.utils.AppUtils;
+import com.bus.server.utils.ClassUtils;
 
 /**
  * Central manager of database connections. All methods are static so that they
@@ -141,7 +141,7 @@ public class DbConnectionManager {
                     if (className != null) {
                         // Attempt to load the class.
                         try {
-                            Class<?> conClass = AppUtils.loadClass(className);
+                            Class<?> conClass = ClassUtils.loadClass(className);
                             connectionProvider = setConnectionProvider((ConnectionProvider)conClass.getDeclaredConstructor(String.class).newInstance(dbname));
                         }
                         catch (Exception e) {

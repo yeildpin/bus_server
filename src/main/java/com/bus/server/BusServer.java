@@ -9,7 +9,7 @@ import java.util.concurrent.RejectedExecutionException;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import com.bus.domain.Utils.Utils;
+import com.bus.domain.Utils.JsonUtils;
 import com.bus.server.cotrolcenter.BusControlCenterServer;
 import com.bus.server.cotrolcenter.StationReportHandler;
 import com.bus.server.database.DbConnectionManager;
@@ -24,7 +24,7 @@ public class BusServer {
 	public static void main(String[] args) {
 		Logger logger = Logger.getLogger(BusServer.class);
 		logger.info("the server initializing...");
-		Application.appHomePath = Utils.getAppHomePath();
+		Application.appHomePath = JsonUtils.getAppHomePath();
 		Application.appConfPath = Application.appHomePath + "/conf/";
 		if(Application.appHomePath == null || !new File(Application.appConfPath).exists()) {
 			logger.error("the app home path not found");
@@ -69,16 +69,16 @@ public class BusServer {
 			logger.info("the server is starting");
 		} catch (IOException e) {
 			logger.info("load config file failed");
-			logger.error(Utils.getExceptionInfo(e));
+			logger.error(JsonUtils.getExceptionInfo(e));
 		} catch (SQLException e1) {
 			logger.info("init database connection failed");
-			logger.error(Utils.getExceptionInfo(e1));
+			logger.error(JsonUtils.getExceptionInfo(e1));
 		} catch (RejectedExecutionException e) {
 			logger.info("there are not enough system resources available to run");
-			logger.error("there are not enough system resources available to run\n"+Utils.getExceptionInfo(e));
+			logger.error("there are not enough system resources available to run\n"+JsonUtils.getExceptionInfo(e));
 			Application.serverCachePool.shutdownNow();
 		} catch (Exception e) {
-			logger.error(Utils.getExceptionInfo(e));
+			logger.error(JsonUtils.getExceptionInfo(e));
 			Application.serverCachePool.shutdownNow();
 		}
 	}

@@ -19,7 +19,7 @@ import org.eclipse.paho.client.mqttv3.MqttMessage;
 import org.eclipse.paho.client.mqttv3.MqttPersistenceException;
 import org.eclipse.paho.client.mqttv3.persist.MqttDefaultFilePersistence;
 
-import com.bus.domain.Utils.Utils;
+import com.bus.domain.Utils.JsonUtils;
 import com.bus.server.Application;
 import com.bus.server.processor.ClientMsgProcessor;
 
@@ -82,9 +82,9 @@ public class MqttServerTask extends Thread implements MqttCallbackExtended {
 			mqttClient.publish(message.getTopic(), (MqttMessage)message);
 			return true;
 		} catch (MqttPersistenceException e) {
-			logger.error(Utils.getExceptionInfo(e));
+			logger.error(JsonUtils.getExceptionInfo(e));
 		} catch (MqttException e) {
-			logger.error(Utils.getExceptionInfo(e));
+			logger.error(JsonUtils.getExceptionInfo(e));
 		}
 		return false;
 	}
@@ -113,7 +113,7 @@ public class MqttServerTask extends Thread implements MqttCallbackExtended {
 				}
 			}
 			if(getLastException() != null) {
-				logger.error(Utils.getExceptionInfo(getLastException()));
+				logger.error(JsonUtils.getExceptionInfo(getLastException()));
 				break;
 			}
 			try {
@@ -139,14 +139,14 @@ public class MqttServerTask extends Thread implements MqttCallbackExtended {
 		if(mSSLProperties.getProperty("com.ibm.ssl.privateStore","").length()>0) {
 			mSSLProperties.setProperty("com.ibm.ssl.privateStore", Application.appConfPath+mSSLProperties.getProperty("com.ibm.ssl.privateStore"));
 		}
-		pushMsgQueue = new LinkedBlockingQueue<PushMqttMessage>(Utils.parseInt(mProperties.getProperty("mqtt.push.messagequeue"), -1));
+		pushMsgQueue = new LinkedBlockingQueue<PushMqttMessage>(JsonUtils.parseInt(mProperties.getProperty("mqtt.push.messagequeue"), -1));
 		while(true) {
 			try {
 				connnect();
 				logger.info("the server login success");
 				break;
 			} catch (MqttException e) {
-				logger.debug(Utils.getExceptionInfo(e));
+				logger.debug(JsonUtils.getExceptionInfo(e));
 				try {
 					Thread.sleep(2*1000);
 				} catch (InterruptedException e1) { }
@@ -186,7 +186,7 @@ public class MqttServerTask extends Thread implements MqttCallbackExtended {
 			connectOptions.setServerURIs(new String[]{sslUrl});
 			logger.debug("mqtt server will login with ssl");
 		} catch (Exception e) {
-			logger.debug(Utils.getExceptionInfo(e));
+			logger.debug(JsonUtils.getExceptionInfo(e));
 			connectOptions.setServerURIs(new String[]{mProperties.getProperty("mqtt.uri.tcp")});
 			logger.debug("mqtt server will login with tcp");
 		}
@@ -216,7 +216,7 @@ public class MqttServerTask extends Thread implements MqttCallbackExtended {
 	@Override
 	public void connectionLost(Throwable cause) {
 		logger.info("the server lost connection, trying reconnect");
-		logger.error(Utils.getExceptionInfo(cause));
+		logger.error(JsonUtils.getExceptionInfo(cause));
 		mIsLogined = false;
 	}
 
@@ -229,7 +229,7 @@ public class MqttServerTask extends Thread implements MqttCallbackExtended {
 			try {
 				Application.clientProcessorPool.execute(new ClientMsgProcessor(mqttMessage));
 			} catch (RejectedExecutionException e) {
-				logger.error(Utils.getExceptionInfo(e));
+				logger.error(JsonUtils.getExceptionInfo(e));
 			}
 		}
 	}
@@ -240,7 +240,7 @@ public class MqttServerTask extends Thread implements MqttCallbackExtended {
 			return;
 		}
 		if(!token.isComplete()) {
-			logger.debug("message " + token.getMessageId()+" publish failed\n"+(token.getException()==null?"":Utils.getExceptionInfo(token.getException())));
+			logger.debug("message " + token.getMessageId()+" publish failed\n"+(token.getException()==null?"":JsonUtils.getExceptionInfo(token.getException())));
 		}
 	}
 
@@ -264,7 +264,7 @@ public class MqttServerTask extends Thread implements MqttCallbackExtended {
 				logger.debug("online push failed");
 			}
 		} catch (MqttException e) {
-			logger.error(Utils.getExceptionInfo(e));
+			logger.error(JsonUtils.getExceptionInfo(e));
 			lastException = e;
 			return;
 		}

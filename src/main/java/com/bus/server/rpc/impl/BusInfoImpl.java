@@ -10,7 +10,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.bus.domain.RPCMessage;
-import com.bus.domain.Utils.Utils;
+import com.bus.domain.Utils.JsonUtils;
 import com.bus.domain.bus.BusLine;
 import com.bus.domain.bus.BusLineList;
 import com.bus.domain.bus.BusStation;
@@ -62,10 +62,10 @@ public class BusInfoImpl implements IBusInfo {
 			}
 			result.setRpccode(1);
 			result.setMessage("获取数据成功");
-			result.setDataContent(Utils.objToJson(busLineList));
+			result.setDataContent(JsonUtils.objToJson(busLineList));
 		} catch (SQLException e) {
 			logger.error("queryBusLineByName:"+busLineName+"\n"+sql);
-			logger.error(Utils.getExceptionInfo(e));;
+			logger.error(JsonUtils.getExceptionInfo(e));;
 		} finally {
 			DbConnectionManager.closeConnection(rs, pstmt, connection);
 		}

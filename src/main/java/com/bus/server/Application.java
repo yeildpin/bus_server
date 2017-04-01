@@ -11,7 +11,7 @@ import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
-import com.bus.domain.Utils.Utils;
+import com.bus.domain.Utils.JsonUtils;
 import com.bus.server.mqtt.MqttServerTask;
 import com.bus.server.processor.BusInfoProcessor;
 import com.bus.server.processor.BusReportProcessor;
@@ -72,7 +72,7 @@ public class Application {
 	}
 	
 	public static int getAppConf(String key, int defaultValue) {
-		return Utils.parseInt(appConfig.getProperty(key, ""), defaultValue);
+		return JsonUtils.parseInt(appConfig.getProperty(key, ""), defaultValue);
 	}
 	
     public static void loadDbConfig(String confPath) throws IOException {
@@ -126,9 +126,9 @@ public class Application {
         return dbProperties.getProperty(dbPoolUsed+"."+name, defaultValue);
     }
     public static int getDbPoolConf(String name, int defaultValue) {
-        return Utils.parseInt(getDbPoolConf(name), defaultValue);
+        return JsonUtils.parseInt(getDbPoolConf(name), defaultValue);
     }
     public static boolean getDbPoolConf(String name, boolean defaultValue) {
-        return Utils.parseBoolean(getDbPoolConf(name), defaultValue);
+        return JsonUtils.parseBoolean(getDbPoolConf(name), defaultValue);
     }
 }

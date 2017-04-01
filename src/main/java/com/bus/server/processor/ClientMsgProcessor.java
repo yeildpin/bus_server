@@ -4,7 +4,7 @@ import java.io.UnsupportedEncodingException;
 
 import org.apache.log4j.Logger;
 
-import com.bus.domain.Utils.Utils;
+import com.bus.domain.Utils.JsonUtils;
 import com.bus.server.Application;
 import com.bus.server.mqtt.PushMqttMessage;
 import com.bus.server.rpc.AbstractDataProcessMethod;
@@ -54,7 +54,7 @@ public class ClientMsgProcessor extends Thread {
 			}
 			logger.info(message.getTopic()+" processed:\n"+result);
 		} catch (UnsupportedEncodingException e) {
-			logger.error(Utils.getExceptionInfo(e));;
+			logger.error(JsonUtils.getExceptionInfo(e));;
 		} catch (InstantiationException e) {
 			logger.error("未注册正确的数据处理方法");
 		} catch (IllegalAccessException e) {

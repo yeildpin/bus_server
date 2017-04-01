@@ -1,6 +1,6 @@
 package com.bus.server.utils;
 
-public class AppUtils {
+public class ClassUtils {
 
     public static Class<?> loadClass(String className) throws ClassNotFoundException {
         Class<?> theClass = null;
@@ -12,7 +12,7 @@ public class AppUtils {
                 theClass = Thread.currentThread().getContextClassLoader().loadClass(className);
             }
             catch (ClassNotFoundException e2) {
-                theClass = AppUtils.class.getClassLoader().loadClass(className);
+                theClass = ClassUtils.class.getClassLoader().loadClass(className);
             }
         }
         return theClass;
