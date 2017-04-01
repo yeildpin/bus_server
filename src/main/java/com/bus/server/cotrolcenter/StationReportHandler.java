@@ -17,10 +17,11 @@ import java.util.concurrent.RejectedExecutionException;
 
 import org.apache.log4j.Logger;
 
-import com.bus.domain.Utils.JsonUtils;
 import com.bus.domain.bus.BusStationReportInfo;
 import com.bus.server.Application;
 import com.bus.server.processor.BusInfoProcessor;
+import com.yeild.common.Utils.CommonUtils;
+import com.yeild.common.Utils.ConvertUtils;
 
 public class StationReportHandler extends Thread {
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
@@ -88,13 +89,13 @@ public class StationReportHandler extends Thread {
 	                	continue;
 	                }
 	                latestRecvTime = System.currentTimeMillis();
-	                byte []recvStr = (" "+JsonUtils.BinaryToHexString(Arrays.copyOfRange(buffer, 0, bytes))).getBytes();
+	                byte []recvStr = (" "+ConvertUtils.BinaryToHexString(Arrays.copyOfRange(buffer, 0, bytes))).getBytes();
 	                recvOutputStream.write(recvStr, 0, recvStr.length);
 	                recvOutputStream.flush();
 	                processBuffer(buffer, bytes);
 				}
 			} catch (IOException e) {
-				logger.debug(JsonUtils.getExceptionInfo(e));
+				logger.debug(CommonUtils.getExceptionInfo(e));
 			} catch (InterruptedException e) {
 			} finally {
 				if(controlCenterSocket != null) {
@@ -172,13 +173,13 @@ public class StationReportHandler extends Thread {
         	reportInfo.setReportType(tReaded.get(1));
         	reportInfo.setNearestBusApart(tReaded.get(12)&0xff);
         	try {
-        		reportInfo.setBusLineName(new String(JsonUtils.listToArray(tReaded.subList(2, 12)), "UTF-8"));
-				reportInfo.setBusno(new String(JsonUtils.listToArray(tReaded.subList(13, 23)), "UTF-8"));
+        		reportInfo.setBusLineName(new String(ConvertUtils.listToArray(tReaded.subList(2, 12)), "UTF-8"));
+				reportInfo.setBusno(new String(ConvertUtils.listToArray(tReaded.subList(13, 23)), "UTF-8"));
 			} catch (UnsupportedEncodingException e) {
-				logger.error(JsonUtils.getExceptionInfo(e));
+				logger.error(CommonUtils.getExceptionInfo(e));
 			}
         	reportInfo.setBusLineDirection(tReaded.get(23)&0xff);
-        	reportInfo.setBusStationNo(JsonUtils.bytesToInt(tReaded.subList(24, 28)));
+        	reportInfo.setBusStationNo(ConvertUtils.bytesToInt(tReaded.subList(24, 28)));
         	BusInfoProcessor infoProcessor = Application.busLineProcessor.get(""+reportInfo.getBusLineName());
 			if(infoProcessor == null) {
 				infoProcessor = new BusInfoProcessor();
@@ -186,7 +187,7 @@ public class StationReportHandler extends Thread {
 				try {
 					Application.busProcessorPool.execute(infoProcessor);
 				} catch (RejectedExecutionException e) {
-					logger.error(JsonUtils.getExceptionInfo(e));
+					logger.error(CommonUtils.getExceptionInfo(e));
 				}
 			}
 			infoProcessor.addStationReport(reportInfo);

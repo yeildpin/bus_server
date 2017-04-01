@@ -10,12 +10,13 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 
 import com.bus.domain.RPCMessage;
-import com.bus.domain.Utils.JsonUtils;
 import com.bus.domain.bus.BusLine;
 import com.bus.domain.bus.BusLineList;
 import com.bus.domain.bus.BusStation;
-import com.bus.server.database.DbConnectionManager;
 import com.bus.server.rpc.IBusInfo;
+import com.yeild.common.JsonUtils.JsonUtils;
+import com.yeild.common.Utils.CommonUtils;
+import com.yeild.common.dbtools.database.DbConnectionManager;
 
 public class BusInfoImpl implements IBusInfo {
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
@@ -65,7 +66,7 @@ public class BusInfoImpl implements IBusInfo {
 			result.setDataContent(JsonUtils.objToJson(busLineList));
 		} catch (SQLException e) {
 			logger.error("queryBusLineByName:"+busLineName+"\n"+sql);
-			logger.error(JsonUtils.getExceptionInfo(e));;
+			logger.error(CommonUtils.getExceptionInfo(e));;
 		} finally {
 			DbConnectionManager.closeConnection(rs, pstmt, connection);
 		}

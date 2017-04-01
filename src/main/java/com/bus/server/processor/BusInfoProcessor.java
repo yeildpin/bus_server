@@ -9,7 +9,7 @@ import org.apache.log4j.Logger;
 
 import com.bus.domain.bus.BusStationReportInfo;
 import com.bus.server.Application;
-import com.bus.server.mqtt.PushMqttMessage;
+import com.yeild.mqtt.PushMqttMessage;
 
 public class BusInfoProcessor extends Thread {
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());

@@ -9,8 +9,8 @@ import java.util.concurrent.RejectedExecutionException;
 
 import org.apache.log4j.Logger;
 
-import com.bus.domain.Utils.JsonUtils;
 import com.bus.server.Application;
+import com.yeild.common.Utils.CommonUtils;
 
 public class BusControlCenterServer extends Thread {
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
@@ -48,7 +48,7 @@ public class BusControlCenterServer extends Thread {
 					}
 				}
 			} catch (IOException e) {
-				logger.error(JsonUtils.getExceptionInfo(e));
+				logger.error(CommonUtils.getExceptionInfo(e));
 				if(mSocketServer != null) {
 					try {
 						mSocketServer.close();

@@ -3,8 +3,8 @@ package com.bus.server.rpc;
 import org.apache.log4j.Logger;
 
 import com.bus.domain.RPCMessage;
-import com.bus.domain.Utils.JsonUtils;
 import com.bus.server.rpc.impl.BusInfoImpl;
+import com.yeild.common.JsonUtils.JsonUtils;
 
 public class BusProcessMethod extends AbstractDataProcessMethod {
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());

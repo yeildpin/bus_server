@@ -2,19 +2,17 @@ package com.bus.server;
 
 import java.io.File;
 import java.io.IOException;
-import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.concurrent.RejectedExecutionException;
 
 import org.apache.log4j.Logger;
 import org.apache.log4j.PropertyConfigurator;
 
-import com.bus.domain.Utils.JsonUtils;
 import com.bus.server.cotrolcenter.BusControlCenterServer;
 import com.bus.server.cotrolcenter.StationReportHandler;
-import com.bus.server.database.DbConnectionManager;
-import com.bus.server.mqtt.MqttServerTask;
-import com.bus.server.rpc.BusProcessMethod;
+import com.yeild.common.Utils.CommonUtils;
+import com.yeild.common.dbtools.database.DbConnectionManager;
+import com.yeild.mqtt.MqttServerTask;
 
 /**
  * 
@@ -24,7 +22,7 @@ public class BusServer {
 	public static void main(String[] args) {
 		Logger logger = Logger.getLogger(BusServer.class);
 		logger.info("the server initializing...");
-		Application.appHomePath = JsonUtils.getAppHomePath();
+		Application.appHomePath = Application.getAppHomePath();
 		Application.appConfPath = Application.appHomePath + "/conf/";
 		if(Application.appHomePath == null || !new File(Application.appConfPath).exists()) {
 			logger.error("the app home path not found");
@@ -42,14 +40,10 @@ public class BusServer {
 		try {
 			Application.loadAppConfig(Application.appConfPath + "server.properties");
 			
-			Application.loadDbConfig(Application.appConfPath + "db.properties");
-			Connection connection = DbConnectionManager.getConnection();
-			DbConnectionManager.closeConnection(connection);
+			DbConnectionManager.initDBConf(Application.appConfPath);
+			DbConnectionManager.initDatabase();
 			
-			Application.classRpcProcessMethod = BusProcessMethod.class;
-			
-			Application.mqttServerTask = new MqttServerTask(Application.appConfPath + "mqtt.properties",
-					Application.appConfPath + "ssl.properties");
+			Application.mqttServerTask = new MqttServerTask(Application.appConfPath);
 			Application.serverCachePool.execute(Application.mqttServerTask);
 			
 			if(!Application.mqttServerTask.waitLoginComplete()) {
@@ -69,16 +63,16 @@ public class BusServer {
 			logger.info("the server is starting");
 		} catch (IOException e) {
 			logger.info("load config file failed");
-			logger.error(JsonUtils.getExceptionInfo(e));
+			logger.error(CommonUtils.getExceptionInfo(e));
 		} catch (SQLException e1) {
 			logger.info("init database connection failed");
-			logger.error(JsonUtils.getExceptionInfo(e1));
+			logger.error(CommonUtils.getExceptionInfo(e1));
 		} catch (RejectedExecutionException e) {
 			logger.info("there are not enough system resources available to run");
-			logger.error("there are not enough system resources available to run\n"+JsonUtils.getExceptionInfo(e));
+			logger.error("there are not enough system resources available to run\n"+CommonUtils.getExceptionInfo(e));
 			Application.serverCachePool.shutdownNow();
 		} catch (Exception e) {
-			logger.error(JsonUtils.getExceptionInfo(e));
+			logger.error(CommonUtils.getExceptionInfo(e));
 			Application.serverCachePool.shutdownNow();
 		}
 	}

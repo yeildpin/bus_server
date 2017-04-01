@@ -13,13 +13,14 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-import com.bus.domain.Utils.JsonUtils;
 import com.bus.domain.tcp.TcpPackageContent;
 import com.bus.domain.tcp.TcpPackageKeepAlive;
 import com.bus.domain.tcp.TcpPackageProcesser;
 import com.bus.domain.tcp.TcpPackageStationReport;
 import com.bus.server.Application;
 import com.bus.server.processor.BusReportProcessor;
+import com.yeild.common.Utils.CommonUtils;
+import com.yeild.common.Utils.ConvertUtils;
 
 public class BusControlCenterHandler extends Thread {
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
@@ -77,7 +78,7 @@ public class BusControlCenterHandler extends Thread {
 	                keepAlive();
 				}
 			} catch (Exception e) {
-				logger.debug(JsonUtils.getExceptionInfo(e));
+				logger.debug(CommonUtils.getExceptionInfo(e));
 			} finally {
 //				if(retryCount < 10) {
 //					retryCount ++;
@@ -122,7 +123,7 @@ public class BusControlCenterHandler extends Thread {
 	        	mSocketOutput.flush();
 	        	latestKeepAlive = new Date().getTime();
 	        	keepAliveWaiting = 0;
-	        	logger.debug("Bus control center did send ping("+packageKeepAlive.headContent.getDataNo()+"):\n"+JsonUtils.BinaryToHexString(keepAlivePac));
+	        	logger.debug("Bus control center did send ping("+packageKeepAlive.headContent.getDataNo()+"):\n"+ConvertUtils.BinaryToHexString(keepAlivePac));
         	}
         	return;
         }
@@ -184,14 +185,14 @@ public class BusControlCenterHandler extends Thread {
         	try {
         		packageContent = new TcpPackageProcesser(tReaded).bodyContent;
         	} catch (Exception e) {
-        		logger.error(JsonUtils.BinaryToHexString(tReaded));
-        		logger.error(JsonUtils.getExceptionInfo(e));
+        		logger.error(ConvertUtils.BinaryToHexString(tReaded));
+        		logger.error(CommonUtils.getExceptionInfo(e));
             	iterReads.remove();
         		continue;
 			}
         	if(packageContent == null || !packageContent.isHasData()
         			|| packageContent.packageHeader.getTpPackLen() != tReaded.size()) {
-        		logger.error(Integer.toHexString(lastestReceivedByte&0xff)+":"+JsonUtils.BinaryToHexString(tReaded));
+        		logger.error(Integer.toHexString(lastestReceivedByte&0xff)+":"+ConvertUtils.BinaryToHexString(tReaded));
             	iterReads.remove();
             	continue;
         	}
@@ -200,7 +201,7 @@ public class BusControlCenterHandler extends Thread {
     			if(packageContent.headContent.getDataNo() != packageKeepAlive.headContent.getDataNo()) {
     				break;
     			}
-	        	logger.debug("Bus control center did receive pong("+packageKeepAlive.headContent.getDataNo()+"):\n"+JsonUtils.BinaryToHexString(tReaded));
+	        	logger.debug("Bus control center did receive pong("+packageKeepAlive.headContent.getDataNo()+"):\n"+ConvertUtils.BinaryToHexString(tReaded));
     			keepAliveWaiting = -1;
     			break;
     		case typeBusArrive:
@@ -214,7 +215,7 @@ public class BusControlCenterHandler extends Thread {
     			infoProcessor.addStationReport(stationReport);
     			break;
 			default:
-				logger.error("not processed package type:"+packageContent.packageHeader.getTpType().name()+"\n"+JsonUtils.BinaryToHexString(tReaded));
+				logger.error("not processed package type:"+packageContent.packageHeader.getTpType().name()+"\n"+ConvertUtils.BinaryToHexString(tReaded));
 				break;
     		}
         	iterReads.remove();

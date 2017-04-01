@@ -29,6 +29,21 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.yeild.common</groupId>
+			<artifactId>dbtools</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yeild.common</groupId>
+			<artifactId>Utils</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.yeild.mqtt</groupId>
+			<artifactId>MqttConnector</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.bus</groupId>
 			<artifactId>bus_domain</artifactId>
 			<version>${project.version}</version>

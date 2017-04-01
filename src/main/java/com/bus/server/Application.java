@@ -11,19 +11,16 @@ import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
-import com.bus.domain.Utils.JsonUtils;
-import com.bus.server.mqtt.MqttServerTask;
 import com.bus.server.processor.BusInfoProcessor;
 import com.bus.server.processor.BusReportProcessor;
+import com.yeild.common.Utils.ConvertUtils;
+import com.yeild.mqtt.MqttServerTask;
 
 public class Application {
 	private static Logger logger = Logger.getLogger(Application.class);
 	public static String appHomePath;
 	public static String appConfPath;
 	private static Properties appConfig = null;
-    private static Properties dbProperties = null;
-    public static String dbPoolUsed="proxool";
-    public static String dbNameDefault="postgre";
 	
     /** 运行服务端主要进程 */
 	public static ExecutorService serverCachePool = Executors.newCachedThreadPool();
@@ -36,9 +33,6 @@ public class Application {
 	
 	public static ConcurrentHashMap<String, BusInfoProcessor> busLineProcessor = new ConcurrentHashMap<String, BusInfoProcessor>();
 	public static ConcurrentHashMap<String, BusReportProcessor> busReportProcessor = new ConcurrentHashMap<String, BusReportProcessor>();
-
-	/** 客户端发送的RPC消息数据处理，在程序初始化时注册 */
-	public static Class<?> classRpcProcessMethod = null;
 
 	public static boolean loadAppConfig(String confPath) throws IOException {
 		InputStream confInputStream = null;
@@ -71,64 +65,24 @@ public class Application {
 		return appConfig.getProperty(key, defaultValue);
 	}
 	
-	public static int getAppConf(String key, int defaultValue) {
-		return JsonUtils.parseInt(appConfig.getProperty(key, ""), defaultValue);
-	}
-	
-    public static void loadDbConfig(String confPath) throws IOException {
-    	InputStream confInputStream = null;
-		try {
-			File confFile = new File(confPath);
-			confInputStream = new FileInputStream(confFile);
-			dbProperties = new Properties();
-			dbProperties.load(confInputStream);
-			dbPoolUsed = dbProperties.getProperty("database.pool", "proxool");
-			dbNameDefault = dbProperties.getProperty("database.default", "postgre");
-		} catch (IOException e) {
-			throw e;
-		} finally {
-			if (confInputStream != null) {
-				try {
-					confInputStream.close();
-				} catch (IOException e) {
-				}
+	public static String getAppHomePath() {
+		String appPath = System.getProperty("workHome");
+		File appHomeFile = null;
+		if(appPath != null) {
+			appHomeFile = new File(appPath);
+			if(appHomeFile.exists()) {
+				return appPath;
 			}
 		}
-    }
-    
-    public static String getDbConf(String name) {
-        return getDbConfWithName(dbNameDefault, name);
-    }
-    
-    public static String getDbConf(String name, String defaultValue) {
-        return getDbConfWithName(dbNameDefault, name, defaultValue);
-    }
-    
-    public static String getDbConfWithName(String dbname, String name) {
-        return getDbConfWithName(dbname, name, null);
-    }
-    
-    public static String getDbConfWithName(String dbname, String name, String defaultValue) {
-        if (dbProperties == null) {
-            return defaultValue;
-        }
-        return dbProperties.getProperty(dbname+"."+name, defaultValue);
-    }
-    
-    public static String getDbPoolConf(String name) {
-        return getDbPoolConf(name, null);
-    }
-    
-    public static String getDbPoolConf(String name, String defaultValue) {
-        if (dbProperties == null) {
-            return defaultValue;
-        }
-        return dbProperties.getProperty(dbPoolUsed+"."+name, defaultValue);
-    }
-    public static int getDbPoolConf(String name, int defaultValue) {
-        return JsonUtils.parseInt(getDbPoolConf(name), defaultValue);
-    }
-    public static boolean getDbPoolConf(String name, boolean defaultValue) {
-        return JsonUtils.parseBoolean(getDbPoolConf(name), defaultValue);
-    }
+		appHomeFile = new File("../");
+		try {
+			return appHomeFile.getCanonicalFile().getAbsolutePath();
+		} catch (IOException e) {
+		}
+		return null;
+	}
+	
+	public static int getAppConf(String key, int defaultValue) {
+		return ConvertUtils.parseInt(appConfig.getProperty(key, ""), defaultValue);
+	}
 }
