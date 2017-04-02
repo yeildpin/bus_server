@@ -10,6 +10,7 @@ import org.apache.log4j.PropertyConfigurator;
 
 import com.bus.server.cotrolcenter.BusControlCenterServer;
 import com.bus.server.cotrolcenter.StationReportHandler;
+import com.bus.server.processor.MqttMessageProcessor;
 import com.yeild.common.Utils.CommonUtils;
 import com.yeild.common.dbtools.database.DbConnectionManager;
 import com.yeild.mqtt.MqttServerTask;
@@ -49,6 +50,9 @@ public class BusServer {
 			if(!Application.mqttServerTask.waitLoginComplete()) {
 				throw new Exception("the mqtt server login failed.");
 			}
+
+			Application.mqttMessageProcessor = new MqttMessageProcessor();
+			Application.serverCachePool.execute(Application.mqttMessageProcessor);
 			
 			BusControlCenterServer controlCenterServer = new BusControlCenterServer(
 					Application.getAppConf("bus.controlcenter.host", "127.0.0.1"),

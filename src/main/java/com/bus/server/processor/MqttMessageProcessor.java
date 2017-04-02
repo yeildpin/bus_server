@@ -4,14 +4,14 @@ import org.apache.log4j.Logger;
 
 import com.yeild.mqtt.PushMqttMessage;
 
-public class ClientMsgProcessor extends Thread {
+public class MqttMessageProcessor extends Thread {
 	private Logger logger = Logger.getLogger(getClass().getSimpleName());
 	private PushMqttMessage message;
 	
-	public ClientMsgProcessor() {
+	public MqttMessageProcessor() {
 	}
 	
-	public ClientMsgProcessor(PushMqttMessage message) {
+	public MqttMessageProcessor(PushMqttMessage message) {
 		this.message = message;
 	}
 

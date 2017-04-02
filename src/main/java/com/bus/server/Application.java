@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import com.bus.server.processor.BusInfoProcessor;
 import com.bus.server.processor.BusReportProcessor;
+import com.bus.server.processor.MqttMessageProcessor;
 import com.yeild.common.Utils.ConvertUtils;
 import com.yeild.mqtt.MqttServerTask;
 
@@ -30,6 +31,7 @@ public class Application {
 	public static ExecutorService clientProcessorPool = null;
 	
 	public static MqttServerTask mqttServerTask = null;
+	public static MqttMessageProcessor mqttMessageProcessor = null;
 	
 	public static ConcurrentHashMap<String, BusInfoProcessor> busLineProcessor = new ConcurrentHashMap<String, BusInfoProcessor>();
 	public static ConcurrentHashMap<String, BusReportProcessor> busReportProcessor = new ConcurrentHashMap<String, BusReportProcessor>();
