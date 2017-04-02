@@ -102,6 +102,12 @@
 				<directory>src/main/bash</directory>
 				<targetPath>${project.build.directory}/${project.artifactId}/bin</targetPath>
 			</resource>
+			<!-- copy the extend library within jdk (default path ovrride by runtime parameter -Djava.ext.dirs) -->
+			<!-- also can copy this on the system that it's running -->
+			<resource>
+				<directory>${java.home}/lib/ext/</directory>
+				<targetPath>${project.build.directory}/${project.artifactId}/lib</targetPath>
+			</resource>
 		</resources>
 		<plugins>
 			<plugin>
