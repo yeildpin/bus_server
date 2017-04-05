@@ -45,6 +45,7 @@ public class BusServer {
 			DbConnectionManager.initDatabase();
 			
 			Application.mqttServerTask = new MqttServerTask(Application.appConfPath);
+			Application.mqttServerTask.addMqttConnectorListener(Application.mqttListener);
 			Application.serverCachePool.execute(Application.mqttServerTask);
 			
 			if(!Application.mqttServerTask.waitLoginComplete()) {

@@ -11,6 +11,7 @@ import java.util.concurrent.Executors;
 
 import org.apache.log4j.Logger;
 
+import com.bus.server.listener.MqttListener;
 import com.bus.server.processor.BusInfoProcessor;
 import com.bus.server.processor.BusReportProcessor;
 import com.bus.server.processor.MqttMessageProcessor;
@@ -31,6 +32,7 @@ public class Application {
 	public static ExecutorService clientProcessorPool = null;
 	
 	public static MqttServerTask mqttServerTask = null;
+	public static MqttListener mqttListener = new MqttListener();
 	public static MqttMessageProcessor mqttMessageProcessor = null;
 	
 	public static ConcurrentHashMap<String, BusInfoProcessor> busLineProcessor = new ConcurrentHashMap<String, BusInfoProcessor>();
