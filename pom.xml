@@ -13,31 +13,64 @@
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<jdk.version>1.8</jdk.version>
+		<jdk.classifier></jdk.classifier>
 		<postgresql.version>42.0.0</postgresql.version>
-		<!-- <postgresql.version>42.0.0.jre6</postgresql.version> -->
 		<mqtt.paho.version>1.1.0</mqtt.paho.version>
 	</properties>
+
+	<profiles>
+		<profile>
+			<id>jdk18</id>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<properties>
+				<jdk.version>1.8</jdk.version>
+				<jdk.classifier></jdk.classifier>
+				<postgresql.version>42.0.0</postgresql.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>jdk16</id>
+			<properties>
+				<jdk.version>1.6</jdk.version>
+				<jdk.classifier>${jdk.version}</jdk.classifier>
+				<postgresql.version>42.0.0.jre6</postgresql.version>
+			</properties>
+		</profile>
+		<profile>
+			<id>jdk17</id>
+			<properties>
+				<jdk.version>1.7</jdk.version>
+				<jdk.classifier>${jdk.version}</jdk.classifier>
+			</properties>
+		</profile>
+	</profiles>
 
 	<dependencies>
 		<dependency>
 			<groupId>com.yeild.common</groupId>
 			<artifactId>dbtools</artifactId>
 			<version>${project.version}</version>
+			<classifier>${jdk.classifier}</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.yeild.common</groupId>
 			<artifactId>JsonUtils</artifactId>
 			<version>${project.version}</version>
+			<classifier>${jdk.classifier}</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.yeild.mqtt</groupId>
 			<artifactId>MqttConnector</artifactId>
 			<version>${project.version}</version>
+			<classifier>${jdk.classifier}</classifier>
 		</dependency>
 		<dependency>
 			<groupId>com.bus</groupId>
 			<artifactId>bus_domain</artifactId>
 			<version>${project.version}</version>
+			<classifier>${jdk.classifier}</classifier>
 		</dependency>
 		<dependency>
 			<groupId>commons-codec</groupId>
@@ -102,7 +135,8 @@
 				<directory>src/main/bash</directory>
 				<targetPath>${project.build.directory}/${project.artifactId}/bin</targetPath>
 			</resource>
-			<!-- copy the extend library within jdk (default path ovrride by runtime parameter -Djava.ext.dirs) -->
+			<!-- copy the extend library within jdk (default path ovrride by runtime 
+				parameter -Djava.ext.dirs) -->
 			<!-- also can copy this on the system that it's running -->
 			<resource>
 				<directory>${java.home}/lib/ext/</directory>
@@ -142,8 +176,9 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.2</version>
+				<version>3.0.2</version>
 				<configuration>
+					<classifier>${jdk.classifier}</classifier>
 					<outputDirectory>${project.build.directory}/${project.artifactId}/lib</outputDirectory>
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
